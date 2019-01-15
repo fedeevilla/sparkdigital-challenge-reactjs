@@ -1,25 +1,61 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import Text1 from "./components/Text1";
+import Text2 from "./components/Text2";
+import { CaesarShift, CaesarDecryption } from "./utils";
+import "./App.css";
+import Shift from "./components/Shift";
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      plain: "",
+      cipher: "",
+      shift: 0
+    };
+  }
+
+  handleChange1 = value => {
+    this.setState({
+      plain: value,
+      cipher: CaesarShift(value, this.state.shift)
+    });
+  };
+
+  handleChange2 = value => {
+    this.setState({
+      cipher: value,
+      plain: CaesarDecryption(value, this.state.shift)
+    });
+  };
+
+  handleChangeShift = value => {
+    this.setState(
+      {
+        shift: value
+      },
+      () => {
+        this.handleChange1(this.state.plain);
+      }
+    );
+  };
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <h1>Caesar Cipher</h1>
+        <div>
+          <Shift
+            value={this.state.shift}
+            handleChange={this.handleChangeShift}
+          />
+        </div>
+        <span style={{ margin: 40 }}>
+          <Text1 text={this.state.plain} handleChange={this.handleChange1} />
+        </span>
+        <span style={{ margin: 40 }}>
+          <Text2 text={this.state.cipher} handleChange={this.handleChange2} />
+        </span>
       </div>
     );
   }
